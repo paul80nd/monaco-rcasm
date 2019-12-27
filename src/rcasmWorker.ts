@@ -29,9 +29,15 @@ export class RCASMWorker {
 	}
 
 	doValidation(uri: string): Thenable<rcasmService.Diagnostic[]> {
-		// not yet suported
+		let document = this._getTextDocument(uri);
+		if (document) {
+			let program = this._languageService.parseProgram(document);
+			let diagnostics = this._languageService.doValidation(document, program);
+			return Promise.resolve(diagnostics)
+		}
 		return Promise.resolve([]);
 	}
+
 	// doComplete(uri: string, position: rcasmService.Position): Thenable<rcasmService.CompletionList> {
 	// 	let document = this._getTextDocument(uri);
 	// 	let htmlDocument = this._languageService.parseHTMLDocument(document);

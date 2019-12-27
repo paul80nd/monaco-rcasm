@@ -60,8 +60,8 @@ export class WorkerManager {
 		if (!this._client) {
 			this._worker = monaco.editor.createWebWorker<RCASMWorker>({
 
-				// module that exports the create() method and returns a `HTMLWorker` instance
-				moduleId: 'vs/language/html/htmlWorker',
+				// module that exports the create() method and returns a `RCASMWorker` instance
+				moduleId: 'vs/language/rcasm/rcasmWorker',
 
 				// passed in to the create() method
 				createData: {

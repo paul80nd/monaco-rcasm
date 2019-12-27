@@ -7,13 +7,13 @@
 </head>
 <body>
 
-<h2>Monaco Editor HTML test page</h2>
+<h2>Monaco Editor RCASM test page</h2>
 <div id="container" style="width:800px;height:600px;border:1px solid grey"></div>
 
 <script>
 	// Loading basic-languages to get the rcasm language definition
 	var paths = {
-		'vs/basic-languages': '../node_modules/monaco-languages/release/dev',
+		'vs/basic-languages': '../node_modules/@paul80nd/monaco-languages/release/dev',
 		'vs/language/rcasm': '../release/dev',
 		'vs': '../node_modules/monaco-editor-core/dev/vs'
 	};
@@ -40,29 +40,45 @@
 	], function() {
 		var editor = monaco.editor.create(document.getElementById('container'), {
 			value: [
-				'<!DOCTYPE HTML>',
-				'<!--',
-				'	Comments are overrated',
-				'-->',
-				'<html>',
-				'<head>',
-				'	<title>HTML Sample</title>',
-				'	<meta http-equiv="X-UA-Compatible" content="IE=edge">',
-				'	<style type="text/css">',
-				'		h1 {',
-				'			color: #CCA3A3;',
-				'		}',
-				'	</style>',
-				'	<script type="text/javascript">',
-				'		window.alert("I am a sample...");',
-				'		var x = 3;',
-				'	</'+'script>',
-				'</head>',
-				'<body>',
-				'	<h1>Heading No.1</h1>',
-				'	<input disabled type="button" value="Click me" />',
-				'</body>',
-				'</html>'
+                ';*****************************************************',
+                '; Demo program to calculate Fibonacci series',
+                '; Result is placed in A register on each loop',
+                '; until calculation overflows. Result is:',
+                '; 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233',
+                ';*****************************************************',
+                '',
+                'start:  ldi a,1     ; Inital setup A = B = 1',
+                '        mov b,a',
+                '',
+                'loop:   mov c,b     ; Calculate C = B, B = A then add',
+                '        mov b,a',
+                '        add',
+                '',
+                '        bne loop    ; Loop until zero',
+                '',
+				'end:    jmp end     ; infinite loop',
+				'',
+				'',
+				';Examples of bad instructions that should create parse errors:',
+				'        ldi         ; Register expected',
+				'        ldi',
+				'        ldi ,10',
+				'        ldi',
+				'        ldi xx',
+				'        ldi xx,10',
+				'        ldi c       ; Register out of range',
+				'        ldi d',
+				'        ldi d,10',
+				'        ldi a       ; Comma expected',
+				'        ldi b',
+				'        ldi a 10',
+				'        ldi a,      ; Integer expected',
+				'        ldi b,',
+				'        ldi a,b',
+				'        ldi a,0x0f',
+				'        ldi a,16    ; Integer out of range',
+				'        ldi a,-17',
+				'        ldi a,--15  ; Other oddities'
 			].join('\n'),
 			language: 'rcasm'
 		});
