@@ -51,67 +51,67 @@ export class LanguageServiceDefaultsImpl implements monaco.languages.rcasm.Langu
 	};
 }
 
-const formatDefaults: Required<monaco.languages.rcasm.HTMLFormatConfiguration> = {
-	tabSize: 4,
-	insertSpaces: false,
-	wrapLineLength: 120,
-	unformatted: 'default": "a, abbr, acronym, b, bdo, big, br, button, cite, code, dfn, em, i, img, input, kbd, label, map, object, q, samp, select, small, span, strong, sub, sup, textarea, tt, var',
-	contentUnformatted: 'pre',
-	indentInnerHtml: false,
-	preserveNewLines: true,
-	maxPreserveNewLines: null,
-	indentHandlebars: false,
-	endWithNewline: false,
-	extraLiners: 'head, body, /html',
-	wrapAttributes: 'auto'
-};
+// const formatDefaults: Required<monaco.languages.rcasm.HTMLFormatConfiguration> = {
+// 	tabSize: 4,
+// 	insertSpaces: false,
+// 	wrapLineLength: 120,
+// 	unformatted: 'default": "a, abbr, acronym, b, bdo, big, br, button, cite, code, dfn, em, i, img, input, kbd, label, map, object, q, samp, select, small, span, strong, sub, sup, textarea, tt, var',
+// 	contentUnformatted: 'pre',
+// 	indentInnerHtml: false,
+// 	preserveNewLines: true,
+// 	maxPreserveNewLines: null,
+// 	indentHandlebars: false,
+// 	endWithNewline: false,
+// 	extraLiners: 'head, body, /html',
+// 	wrapAttributes: 'auto'
+// };
 
-const htmlOptionsDefault: Required<monaco.languages.rcasm.Options> = {
-	format: formatDefaults,
-	suggest: { html5: true, angular1: true, ionic: true }
-}
+ const rcasmOptionsDefault: Required<monaco.languages.rcasm.Options> = {
+// 	format: formatDefaults,
+// 	suggest: { html5: true, angular1: true, ionic: true }
+ }
 
-const handlebarOptionsDefault: Required<monaco.languages.rcasm.Options> = {
-	format: formatDefaults,
-	suggest: { html5: true }
-}
+// const handlebarOptionsDefault: Required<monaco.languages.rcasm.Options> = {
+// 	format: formatDefaults,
+// 	suggest: { html5: true }
+// }
 
-const razorOptionsDefault: Required<monaco.languages.rcasm.Options> = {
-	format: formatDefaults,
-	suggest: { html5: true, razor: true }
-}
+// const razorOptionsDefault: Required<monaco.languages.rcasm.Options> = {
+// 	format: formatDefaults,
+// 	suggest: { html5: true, razor: true }
+// }
 
 function getConfigurationDefault(languageId: string): Required<monaco.languages.rcasm.ModeConfiguration> {
 	return {
-		completionItems: true,
-		hovers: true,
-		documentSymbols: true,
-		links: true,
-		documentHighlights: true,
-		rename: true,
-		colors: true,
-		foldingRanges: true,
-		selectionRanges: true,
-		diagnostics: languageId === htmlLanguageId, // turned off for Razor and Handlebar
-		documentFormattingEdits: languageId === htmlLanguageId, // turned off for Razor and Handlebar
-		documentRangeFormattingEdits: languageId === htmlLanguageId // turned off for Razor and Handlebar
+		// completionItems: true,
+		// hovers: true,
+		// documentSymbols: true,
+		// links: true,
+		// documentHighlights: true,
+		// rename: true,
+		// colors: true,
+		// foldingRanges: true,
+		// selectionRanges: true,
+		diagnostics: languageId === rcasmLanguageId, // turned off for Razor and Handlebar
+//		documentFormattingEdits: languageId === rcasmLanguageId, // turned off for Razor and Handlebar
+//		documentRangeFormattingEdits: languageId === rcasmLanguageId // turned off for Razor and Handlebar
 	};
 }
 
-const htmlLanguageId = 'html';
-const handlebarsLanguageId = 'handlebars';
-const razorLanguageId = 'razor';
+const rcasmLanguageId = 'rcasm';
+// const handlebarsLanguageId = 'handlebars';
+// const razorLanguageId = 'razor';
 
-const htmlDefaults = new LanguageServiceDefaultsImpl(htmlLanguageId, htmlOptionsDefault, getConfigurationDefault(htmlLanguageId));
-const handlebarDefaults = new LanguageServiceDefaultsImpl(handlebarsLanguageId, handlebarOptionsDefault, getConfigurationDefault(handlebarsLanguageId));
-const razorDefaults = new LanguageServiceDefaultsImpl(razorLanguageId, razorOptionsDefault, getConfigurationDefault(razorLanguageId));
+const rcasmDefaults = new LanguageServiceDefaultsImpl(rcasmLanguageId, rcasmOptionsDefault, getConfigurationDefault(rcasmLanguageId));
+// const handlebarDefaults = new LanguageServiceDefaultsImpl(handlebarsLanguageId, handlebarOptionsDefault, getConfigurationDefault(handlebarsLanguageId));
+// const razorDefaults = new LanguageServiceDefaultsImpl(razorLanguageId, razorOptionsDefault, getConfigurationDefault(razorLanguageId));
 
 // Export API
 function createAPI(): typeof monaco.languages.rcasm {
 	return {
-		htmlDefaults: htmlDefaults,
-		razorDefaults: razorDefaults,
-		handlebarDefaults: handlebarDefaults
+		rcasmDefaults: rcasmDefaults,
+//		razorDefaults: razorDefaults,
+//		handlebarDefaults: handlebarDefaults
 	}
 }
 monaco.languages.rcasm = createAPI();
@@ -122,12 +122,12 @@ function getMode(): Promise<typeof mode> {
 	return import('./rcasmMode');
 }
 
-monaco.languages.onLanguage(htmlLanguageId, () => {
-	getMode().then(mode => mode.setupMode(htmlDefaults));
+monaco.languages.onLanguage(rcasmLanguageId, () => {
+	getMode().then(mode => mode.setupMode(rcasmDefaults));
 });
-monaco.languages.onLanguage(handlebarsLanguageId, () => {
-	getMode().then(mode => mode.setupMode(handlebarDefaults));
-});
-monaco.languages.onLanguage(razorLanguageId, () => {
-	getMode().then(mode => mode.setupMode(razorDefaults));
-});
+// monaco.languages.onLanguage(handlebarsLanguageId, () => {
+// 	getMode().then(mode => mode.setupMode(handlebarDefaults));
+// });
+// monaco.languages.onLanguage(razorLanguageId, () => {
+// 	getMode().then(mode => mode.setupMode(razorDefaults));
+// });

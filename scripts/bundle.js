@@ -35,9 +35,9 @@ function bundleOne(moduleId, exclude) {
 		},
 		optimize: 'none',
 		packages: [{
-			name: 'vscode-html-languageservice',
-			location: path.join(REPO_ROOT, 'node_modules/vscode-html-languageservice/lib/umd'),
-			main: 'htmlLanguageService'
+			name: '@paul80nd/vscode-rcasm-languageservice',
+			location: path.join(REPO_ROOT, 'node_modules/@paul80nd/vscode-rcasm-languageservice/lib/umd'),
+			main: 'rcasmLanguageService'
 		}, {
 			name: 'vscode-languageserver-types',
 			location: path.join(REPO_ROOT, 'node_modules/vscode-languageserver-types/lib/umd'),
