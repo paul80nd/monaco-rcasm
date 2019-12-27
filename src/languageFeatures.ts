@@ -5,9 +5,9 @@
 'use strict';
 
 import { LanguageServiceDefaultsImpl } from './monaco.contribution';
-import { HTMLWorker } from './htmlWorker';
+import { RCASMWorker as RCASMWorker } from './rcasmWorker';
 
-import * as htmlService from 'vscode-html-languageservice';
+import * as rcasmService from 'vscode-html-languageservice';
 
 import Uri = monaco.Uri;
 import Position = monaco.Position;
@@ -18,7 +18,7 @@ import IDisposable = monaco.IDisposable;
 
 
 export interface WorkerAccessor {
-	(...more: Uri[]): Thenable<HTMLWorker>
+	(...more: Uri[]): Thenable<RCASMWorker>
 }
 
 // --- diagnostics --- ---
@@ -103,16 +103,16 @@ export class DiagnosticsAdapter {
 
 function toSeverity(lsSeverity: number): monaco.MarkerSeverity {
 	switch (lsSeverity) {
-		case htmlService.DiagnosticSeverity.Error: return monaco.MarkerSeverity.Error;
-		case htmlService.DiagnosticSeverity.Warning: return monaco.MarkerSeverity.Warning;
-		case htmlService.DiagnosticSeverity.Information: return monaco.MarkerSeverity.Info;
-		case htmlService.DiagnosticSeverity.Hint: return monaco.MarkerSeverity.Hint;
+		case rcasmService.DiagnosticSeverity.Error: return monaco.MarkerSeverity.Error;
+		case rcasmService.DiagnosticSeverity.Warning: return monaco.MarkerSeverity.Warning;
+		case rcasmService.DiagnosticSeverity.Information: return monaco.MarkerSeverity.Info;
+		case rcasmService.DiagnosticSeverity.Hint: return monaco.MarkerSeverity.Hint;
 		default:
 			return monaco.MarkerSeverity.Info;
 	}
 }
 
-function toDiagnostics(resource: Uri, diag: htmlService.Diagnostic): monaco.editor.IMarkerData {
+function toDiagnostics(resource: Uri, diag: rcasmService.Diagnostic): monaco.editor.IMarkerData {
 	const code = typeof diag.code === 'number' ? String(diag.code) : <string>diag.code;
 
 	return {
@@ -129,21 +129,21 @@ function toDiagnostics(resource: Uri, diag: htmlService.Diagnostic): monaco.edit
 
 // --- completion ------
 
-function fromPosition(position: Position): htmlService.Position {
+function fromPosition(position: Position): rcasmService.Position {
 	if (!position) {
 		return void 0;
 	}
 	return { character: position.column - 1, line: position.lineNumber - 1 };
 }
 
-function fromRange(range: Range): htmlService.Range {
+function fromRange(range: Range): rcasmService.Range {
 	if (!range) {
 		return void 0;
 	}
 	return { start: fromPosition(range.getStartPosition()), end: fromPosition(range.getEndPosition()) };
 }
 
-function toRange(range: htmlService.Range): Range {
+function toRange(range: rcasmService.Range): Range {
 	if (!range) {
 		return void 0;
 	}
@@ -154,55 +154,55 @@ function toCompletionItemKind(kind: number): monaco.languages.CompletionItemKind
 	const mItemKind = monaco.languages.CompletionItemKind;
 
 	switch (kind) {
-		case htmlService.CompletionItemKind.Text: return mItemKind.Text;
-		case htmlService.CompletionItemKind.Method: return mItemKind.Method;
-		case htmlService.CompletionItemKind.Function: return mItemKind.Function;
-		case htmlService.CompletionItemKind.Constructor: return mItemKind.Constructor;
-		case htmlService.CompletionItemKind.Field: return mItemKind.Field;
-		case htmlService.CompletionItemKind.Variable: return mItemKind.Variable;
-		case htmlService.CompletionItemKind.Class: return mItemKind.Class;
-		case htmlService.CompletionItemKind.Interface: return mItemKind.Interface;
-		case htmlService.CompletionItemKind.Module: return mItemKind.Module;
-		case htmlService.CompletionItemKind.Property: return mItemKind.Property;
-		case htmlService.CompletionItemKind.Unit: return mItemKind.Unit;
-		case htmlService.CompletionItemKind.Value: return mItemKind.Value;
-		case htmlService.CompletionItemKind.Enum: return mItemKind.Enum;
-		case htmlService.CompletionItemKind.Keyword: return mItemKind.Keyword;
-		case htmlService.CompletionItemKind.Snippet: return mItemKind.Snippet;
-		case htmlService.CompletionItemKind.Color: return mItemKind.Color;
-		case htmlService.CompletionItemKind.File: return mItemKind.File;
-		case htmlService.CompletionItemKind.Reference: return mItemKind.Reference;
+		case rcasmService.CompletionItemKind.Text: return mItemKind.Text;
+		case rcasmService.CompletionItemKind.Method: return mItemKind.Method;
+		case rcasmService.CompletionItemKind.Function: return mItemKind.Function;
+		case rcasmService.CompletionItemKind.Constructor: return mItemKind.Constructor;
+		case rcasmService.CompletionItemKind.Field: return mItemKind.Field;
+		case rcasmService.CompletionItemKind.Variable: return mItemKind.Variable;
+		case rcasmService.CompletionItemKind.Class: return mItemKind.Class;
+		case rcasmService.CompletionItemKind.Interface: return mItemKind.Interface;
+		case rcasmService.CompletionItemKind.Module: return mItemKind.Module;
+		case rcasmService.CompletionItemKind.Property: return mItemKind.Property;
+		case rcasmService.CompletionItemKind.Unit: return mItemKind.Unit;
+		case rcasmService.CompletionItemKind.Value: return mItemKind.Value;
+		case rcasmService.CompletionItemKind.Enum: return mItemKind.Enum;
+		case rcasmService.CompletionItemKind.Keyword: return mItemKind.Keyword;
+		case rcasmService.CompletionItemKind.Snippet: return mItemKind.Snippet;
+		case rcasmService.CompletionItemKind.Color: return mItemKind.Color;
+		case rcasmService.CompletionItemKind.File: return mItemKind.File;
+		case rcasmService.CompletionItemKind.Reference: return mItemKind.Reference;
 	}
 	return mItemKind.Property;
 }
 
-function fromCompletionItemKind(kind: monaco.languages.CompletionItemKind): htmlService.CompletionItemKind {
+function fromCompletionItemKind(kind: monaco.languages.CompletionItemKind): rcasmService.CompletionItemKind {
 	const mItemKind = monaco.languages.CompletionItemKind;
 
 	switch (kind) {
-		case mItemKind.Text: return htmlService.CompletionItemKind.Text;
-		case mItemKind.Method: return htmlService.CompletionItemKind.Method;
-		case mItemKind.Function: return htmlService.CompletionItemKind.Function;
-		case mItemKind.Constructor: return htmlService.CompletionItemKind.Constructor;
-		case mItemKind.Field: return htmlService.CompletionItemKind.Field;
-		case mItemKind.Variable: return htmlService.CompletionItemKind.Variable;
-		case mItemKind.Class: return htmlService.CompletionItemKind.Class;
-		case mItemKind.Interface: return htmlService.CompletionItemKind.Interface;
-		case mItemKind.Module: return htmlService.CompletionItemKind.Module;
-		case mItemKind.Property: return htmlService.CompletionItemKind.Property;
-		case mItemKind.Unit: return htmlService.CompletionItemKind.Unit;
-		case mItemKind.Value: return htmlService.CompletionItemKind.Value;
-		case mItemKind.Enum: return htmlService.CompletionItemKind.Enum;
-		case mItemKind.Keyword: return htmlService.CompletionItemKind.Keyword;
-		case mItemKind.Snippet: return htmlService.CompletionItemKind.Snippet;
-		case mItemKind.Color: return htmlService.CompletionItemKind.Color;
-		case mItemKind.File: return htmlService.CompletionItemKind.File;
-		case mItemKind.Reference: return htmlService.CompletionItemKind.Reference;
+		case mItemKind.Text: return rcasmService.CompletionItemKind.Text;
+		case mItemKind.Method: return rcasmService.CompletionItemKind.Method;
+		case mItemKind.Function: return rcasmService.CompletionItemKind.Function;
+		case mItemKind.Constructor: return rcasmService.CompletionItemKind.Constructor;
+		case mItemKind.Field: return rcasmService.CompletionItemKind.Field;
+		case mItemKind.Variable: return rcasmService.CompletionItemKind.Variable;
+		case mItemKind.Class: return rcasmService.CompletionItemKind.Class;
+		case mItemKind.Interface: return rcasmService.CompletionItemKind.Interface;
+		case mItemKind.Module: return rcasmService.CompletionItemKind.Module;
+		case mItemKind.Property: return rcasmService.CompletionItemKind.Property;
+		case mItemKind.Unit: return rcasmService.CompletionItemKind.Unit;
+		case mItemKind.Value: return rcasmService.CompletionItemKind.Value;
+		case mItemKind.Enum: return rcasmService.CompletionItemKind.Enum;
+		case mItemKind.Keyword: return rcasmService.CompletionItemKind.Keyword;
+		case mItemKind.Snippet: return rcasmService.CompletionItemKind.Snippet;
+		case mItemKind.Color: return rcasmService.CompletionItemKind.Color;
+		case mItemKind.File: return rcasmService.CompletionItemKind.File;
+		case mItemKind.Reference: return rcasmService.CompletionItemKind.Reference;
 	}
-	return htmlService.CompletionItemKind.Property;
+	return rcasmService.CompletionItemKind.Property;
 }
 
-function toTextEdit(textEdit: htmlService.TextEdit): monaco.editor.ISingleEditOperation {
+function toTextEdit(textEdit: rcasmService.TextEdit): monaco.editor.ISingleEditOperation {
 	if (!textEdit) {
 		return void 0;
 	}
@@ -251,7 +251,7 @@ export class CompletionAdapter implements monaco.languages.CompletionItemProvide
 				if (entry.additionalTextEdits) {
 					item.additionalTextEdits = entry.additionalTextEdits.map(toTextEdit)
 				}
-				if (entry.insertTextFormat === htmlService.InsertTextFormat.Snippet) {
+				if (entry.insertTextFormat === rcasmService.InsertTextFormat.Snippet) {
 					item.insertTextRules = monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet;
 				}
 				return item;
@@ -267,11 +267,11 @@ export class CompletionAdapter implements monaco.languages.CompletionItemProvide
 
 // --- hover ------
 
-function isMarkupContent(thing: any): thing is htmlService.MarkupContent {
-	return thing && typeof thing === 'object' && typeof (<htmlService.MarkupContent>thing).kind === 'string';
+function isMarkupContent(thing: any): thing is rcasmService.MarkupContent {
+	return thing && typeof thing === 'object' && typeof (<rcasmService.MarkupContent>thing).kind === 'string';
 }
 
-function toMarkdownString(entry: htmlService.MarkupContent | htmlService.MarkedString): monaco.IMarkdownString {
+function toMarkdownString(entry: rcasmService.MarkupContent | rcasmService.MarkedString): monaco.IMarkdownString {
 	if (typeof entry === 'string') {
 		return {
 			value: entry
@@ -291,7 +291,7 @@ function toMarkdownString(entry: htmlService.MarkupContent | htmlService.MarkedS
 	return { value: '```' + entry.language + '\n' + entry.value + '\n```\n' };
 }
 
-function toMarkedStringArray(contents: htmlService.MarkupContent | htmlService.MarkedString | htmlService.MarkedString[]): monaco.IMarkdownString[] {
+function toMarkedStringArray(contents: rcasmService.MarkupContent | rcasmService.MarkedString | rcasmService.MarkedString[]): monaco.IMarkdownString[] {
 	if (!contents) {
 		return void 0;
 	}
@@ -325,13 +325,13 @@ export class HoverAdapter implements monaco.languages.HoverProvider {
 
 // --- document highlights ------
 
-function toHighlighKind(kind: htmlService.DocumentHighlightKind): monaco.languages.DocumentHighlightKind {
+function toHighlighKind(kind: rcasmService.DocumentHighlightKind): monaco.languages.DocumentHighlightKind {
 	const mKind = monaco.languages.DocumentHighlightKind;
 
 	switch (kind) {
-		case htmlService.DocumentHighlightKind.Read: return mKind.Read;
-		case htmlService.DocumentHighlightKind.Write: return mKind.Write;
-		case htmlService.DocumentHighlightKind.Text: return mKind.Text;
+		case rcasmService.DocumentHighlightKind.Read: return mKind.Read;
+		case rcasmService.DocumentHighlightKind.Write: return mKind.Write;
+		case rcasmService.DocumentHighlightKind.Text: return mKind.Text;
 	}
 	return mKind.Text;
 }
@@ -359,28 +359,28 @@ export class DocumentHighlightAdapter implements monaco.languages.DocumentHighli
 
 // --- document symbols ------
 
-function toSymbolKind(kind: htmlService.SymbolKind): monaco.languages.SymbolKind {
+function toSymbolKind(kind: rcasmService.SymbolKind): monaco.languages.SymbolKind {
 	let mKind = monaco.languages.SymbolKind;
 
 	switch (kind) {
-		case htmlService.SymbolKind.File: return mKind.Array;
-		case htmlService.SymbolKind.Module: return mKind.Module;
-		case htmlService.SymbolKind.Namespace: return mKind.Namespace;
-		case htmlService.SymbolKind.Package: return mKind.Package;
-		case htmlService.SymbolKind.Class: return mKind.Class;
-		case htmlService.SymbolKind.Method: return mKind.Method;
-		case htmlService.SymbolKind.Property: return mKind.Property;
-		case htmlService.SymbolKind.Field: return mKind.Field;
-		case htmlService.SymbolKind.Constructor: return mKind.Constructor;
-		case htmlService.SymbolKind.Enum: return mKind.Enum;
-		case htmlService.SymbolKind.Interface: return mKind.Interface;
-		case htmlService.SymbolKind.Function: return mKind.Function;
-		case htmlService.SymbolKind.Variable: return mKind.Variable;
-		case htmlService.SymbolKind.Constant: return mKind.Constant;
-		case htmlService.SymbolKind.String: return mKind.String;
-		case htmlService.SymbolKind.Number: return mKind.Number;
-		case htmlService.SymbolKind.Boolean: return mKind.Boolean;
-		case htmlService.SymbolKind.Array: return mKind.Array;
+		case rcasmService.SymbolKind.File: return mKind.Array;
+		case rcasmService.SymbolKind.Module: return mKind.Module;
+		case rcasmService.SymbolKind.Namespace: return mKind.Namespace;
+		case rcasmService.SymbolKind.Package: return mKind.Package;
+		case rcasmService.SymbolKind.Class: return mKind.Class;
+		case rcasmService.SymbolKind.Method: return mKind.Method;
+		case rcasmService.SymbolKind.Property: return mKind.Property;
+		case rcasmService.SymbolKind.Field: return mKind.Field;
+		case rcasmService.SymbolKind.Constructor: return mKind.Constructor;
+		case rcasmService.SymbolKind.Enum: return mKind.Enum;
+		case rcasmService.SymbolKind.Interface: return mKind.Interface;
+		case rcasmService.SymbolKind.Function: return mKind.Function;
+		case rcasmService.SymbolKind.Variable: return mKind.Variable;
+		case rcasmService.SymbolKind.Constant: return mKind.Constant;
+		case rcasmService.SymbolKind.String: return mKind.String;
+		case rcasmService.SymbolKind.Number: return mKind.Number;
+		case rcasmService.SymbolKind.Boolean: return mKind.Boolean;
+		case rcasmService.SymbolKind.Array: return mKind.Array;
 	}
 	return mKind.Function;
 }
@@ -433,7 +433,7 @@ export class DocumentLinkAdapter implements monaco.languages.LinkProvider {
 }
 
 
-function fromFormattingOptions(options: monaco.languages.FormattingOptions): htmlService.FormattingOptions {
+function fromFormattingOptions(options: monaco.languages.FormattingOptions): rcasmService.FormattingOptions {
 	return {
 		tabSize: options.tabSize,
 		insertSpaces: options.insertSpaces
@@ -494,7 +494,7 @@ export class RenameAdapter implements monaco.languages.RenameProvider {
 	}
 }
 
-function toWorkspaceEdit(edit: htmlService.WorkspaceEdit): monaco.languages.WorkspaceEdit {
+function toWorkspaceEdit(edit: rcasmService.WorkspaceEdit): monaco.languages.WorkspaceEdit {
 	if (!edit || !edit.changes) {
 		return void 0;
 	}
@@ -532,7 +532,7 @@ export class FoldingRangeAdapter implements monaco.languages.FoldingRangeProvide
 					end: range.endLine + 1
 				};
 				if (typeof range.kind !== 'undefined') {
-					result.kind = toFoldingRangeKind(<htmlService.FoldingRangeKind>range.kind);
+					result.kind = toFoldingRangeKind(<rcasmService.FoldingRangeKind>range.kind);
 				}
 				return result;
 			});
@@ -541,11 +541,11 @@ export class FoldingRangeAdapter implements monaco.languages.FoldingRangeProvide
 
 }
 
-function toFoldingRangeKind(kind: htmlService.FoldingRangeKind): monaco.languages.FoldingRangeKind {
+function toFoldingRangeKind(kind: rcasmService.FoldingRangeKind): monaco.languages.FoldingRangeKind {
 	switch (kind) {
-		case htmlService.FoldingRangeKind.Comment: return monaco.languages.FoldingRangeKind.Comment;
-		case htmlService.FoldingRangeKind.Imports: return monaco.languages.FoldingRangeKind.Imports;
-		case htmlService.FoldingRangeKind.Region: return monaco.languages.FoldingRangeKind.Region;
+		case rcasmService.FoldingRangeKind.Comment: return monaco.languages.FoldingRangeKind.Comment;
+		case rcasmService.FoldingRangeKind.Imports: return monaco.languages.FoldingRangeKind.Imports;
+		case rcasmService.FoldingRangeKind.Region: return monaco.languages.FoldingRangeKind.Region;
 	}
 }
 

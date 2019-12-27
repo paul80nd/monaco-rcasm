@@ -13,25 +13,25 @@ const headerVersion = semver + '(' + sha1 + ')';
 const BUNDLED_FILE_HEADER = [
 	'/*!-----------------------------------------------------------------------------',
 	' * Copyright (c) Microsoft Corporation. All rights reserved.',
-	' * monaco-html version: ' + headerVersion,
+	' * monaco-rcasm version: ' + headerVersion,
 	' * Released under the MIT license',
-	' * https://github.com/Microsoft/monaco-html/blob/master/LICENSE.md',
+	' * https://github.com/paul80nd/monaco-rcasm/blob/master/LICENSE.md',
 	' *-----------------------------------------------------------------------------*/',
 	''
 ].join('\n');
 
 bundleOne('monaco.contribution');
-bundleOne('htmlMode');
-bundleOne('htmlWorker');
+bundleOne('rcasmMode');
+bundleOne('rcasmWorker');
 
 function bundleOne(moduleId, exclude) {
 	requirejs.optimize({
 		baseUrl: 'out/amd/',
-		name: 'vs/language/html/' + moduleId,
+		name: 'vs/language/rcasm/' + moduleId,
 		out: 'release/dev/' + moduleId + '.js',
 		exclude: exclude,
 		paths: {
-			'vs/language/html': REPO_ROOT + '/out/amd'
+			'vs/language/rcasm': REPO_ROOT + '/out/amd'
 		},
 		optimize: 'none',
 		packages: [{

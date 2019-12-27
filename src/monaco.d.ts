@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-declare module monaco.languages.html {
+declare module monaco.languages.rcasm {
 	export interface HTMLFormatConfiguration {
 		readonly tabSize: number;
 		readonly insertSpaces: boolean;

@@ -5,7 +5,7 @@
 'use strict';
 
 import { LanguageServiceDefaultsImpl } from './monaco.contribution';
-import { HTMLWorker } from './htmlWorker';
+import { RCASMWorker } from './rcasmWorker';
 
 import IDisposable = monaco.IDisposable;
 import Uri = monaco.Uri;
@@ -19,8 +19,8 @@ export class WorkerManager {
 	private _lastUsedTime: number;
 	private _configChangeListener: IDisposable;
 
-	private _worker: monaco.editor.MonacoWebWorker<HTMLWorker>;
-	private _client: Promise<HTMLWorker>;
+	private _worker: monaco.editor.MonacoWebWorker<RCASMWorker>;
+	private _client: Promise<RCASMWorker>;
 
 	constructor(defaults: LanguageServiceDefaultsImpl) {
 		this._defaults = defaults;
@@ -54,11 +54,11 @@ export class WorkerManager {
 		}
 	}
 
-	private _getClient(): Promise<HTMLWorker> {
+	private _getClient(): Promise<RCASMWorker> {
 		this._lastUsedTime = Date.now();
 
 		if (!this._client) {
-			this._worker = monaco.editor.createWebWorker<HTMLWorker>({
+			this._worker = monaco.editor.createWebWorker<RCASMWorker>({
 
 				// module that exports the create() method and returns a `HTMLWorker` instance
 				moduleId: 'vs/language/html/htmlWorker',
@@ -72,14 +72,14 @@ export class WorkerManager {
 				label: this._defaults.languageId
 			});
 
-			this._client = <Promise<HTMLWorker>>this._worker.getProxy();
+			this._client = <Promise<RCASMWorker>>this._worker.getProxy();
 		}
 
 		return this._client;
 	}
 
-	getLanguageServiceWorker(...resources: Uri[]): Promise<HTMLWorker> {
-		let _client: HTMLWorker;
+	getLanguageServiceWorker(...resources: Uri[]): Promise<RCASMWorker> {
+		let _client: RCASMWorker;
 		return this._getClient().then((client) => {
 			_client = client
 		}).then(_ => {

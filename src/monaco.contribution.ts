@@ -4,27 +4,27 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 
-import * as mode from './htmlMode';
+import * as mode from './rcasmMode';
 
 import Emitter = monaco.Emitter;
 import IEvent = monaco.IEvent;
 
-// --- HTML configuration and defaults ---------
+// --- RCASM configuration and defaults ---------
 
-export class LanguageServiceDefaultsImpl implements monaco.languages.html.LanguageServiceDefaults {
+export class LanguageServiceDefaultsImpl implements monaco.languages.rcasm.LanguageServiceDefaults {
 
-	private _onDidChange = new Emitter<monaco.languages.html.LanguageServiceDefaults>();
-	private _options: monaco.languages.html.Options;
-	private _modeConfiguration: monaco.languages.html.ModeConfiguration;
+	private _onDidChange = new Emitter<monaco.languages.rcasm.LanguageServiceDefaults>();
+	private _options: monaco.languages.rcasm.Options;
+	private _modeConfiguration: monaco.languages.rcasm.ModeConfiguration;
 	private _languageId: string;
 
-	constructor(languageId: string, options: monaco.languages.html.Options, modeConfiguration: monaco.languages.html.ModeConfiguration) {
+	constructor(languageId: string, options: monaco.languages.rcasm.Options, modeConfiguration: monaco.languages.rcasm.ModeConfiguration) {
 		this._languageId = languageId;
 		this.setOptions(options);
 		this.setModeConfiguration(modeConfiguration);
 	}
 
-	get onDidChange(): IEvent<monaco.languages.html.LanguageServiceDefaults> {
+	get onDidChange(): IEvent<monaco.languages.rcasm.LanguageServiceDefaults> {
 		return this._onDidChange.event;
 	}
 
@@ -32,26 +32,26 @@ export class LanguageServiceDefaultsImpl implements monaco.languages.html.Langua
 		return this._languageId;
 	}
 
-	get options(): monaco.languages.html.Options {
+	get options(): monaco.languages.rcasm.Options {
 		return this._options;
 	}
 
-	get modeConfiguration(): monaco.languages.html.ModeConfiguration {
+	get modeConfiguration(): monaco.languages.rcasm.ModeConfiguration {
 		return this._modeConfiguration;
 	}
 
-	setOptions(options: monaco.languages.html.Options): void {
+	setOptions(options: monaco.languages.rcasm.Options): void {
 		this._options = options || Object.create(null);
 		this._onDidChange.fire(this);
 	}
 
-	setModeConfiguration(modeConfiguration: monaco.languages.html.ModeConfiguration): void {
+	setModeConfiguration(modeConfiguration: monaco.languages.rcasm.ModeConfiguration): void {
 		this._modeConfiguration = modeConfiguration || Object.create(null);
 		this._onDidChange.fire(this);
 	};
 }
 
-const formatDefaults: Required<monaco.languages.html.HTMLFormatConfiguration> = {
+const formatDefaults: Required<monaco.languages.rcasm.HTMLFormatConfiguration> = {
 	tabSize: 4,
 	insertSpaces: false,
 	wrapLineLength: 120,
@@ -66,22 +66,22 @@ const formatDefaults: Required<monaco.languages.html.HTMLFormatConfiguration> = 
 	wrapAttributes: 'auto'
 };
 
-const htmlOptionsDefault: Required<monaco.languages.html.Options> = {
+const htmlOptionsDefault: Required<monaco.languages.rcasm.Options> = {
 	format: formatDefaults,
 	suggest: { html5: true, angular1: true, ionic: true }
 }
 
-const handlebarOptionsDefault: Required<monaco.languages.html.Options> = {
+const handlebarOptionsDefault: Required<monaco.languages.rcasm.Options> = {
 	format: formatDefaults,
 	suggest: { html5: true }
 }
 
-const razorOptionsDefault: Required<monaco.languages.html.Options> = {
+const razorOptionsDefault: Required<monaco.languages.rcasm.Options> = {
 	format: formatDefaults,
 	suggest: { html5: true, razor: true }
 }
 
-function getConfigurationDefault(languageId: string): Required<monaco.languages.html.ModeConfiguration> {
+function getConfigurationDefault(languageId: string): Required<monaco.languages.rcasm.ModeConfiguration> {
 	return {
 		completionItems: true,
 		hovers: true,
@@ -107,19 +107,19 @@ const handlebarDefaults = new LanguageServiceDefaultsImpl(handlebarsLanguageId, 
 const razorDefaults = new LanguageServiceDefaultsImpl(razorLanguageId, razorOptionsDefault, getConfigurationDefault(razorLanguageId));
 
 // Export API
-function createAPI(): typeof monaco.languages.html {
+function createAPI(): typeof monaco.languages.rcasm {
 	return {
 		htmlDefaults: htmlDefaults,
 		razorDefaults: razorDefaults,
 		handlebarDefaults: handlebarDefaults
 	}
 }
-monaco.languages.html = createAPI();
+monaco.languages.rcasm = createAPI();
 
 // --- Registration to monaco editor ---
 
 function getMode(): Promise<typeof mode> {
-	return import('./htmlMode');
+	return import('./rcasmMode');
 }
 
 monaco.languages.onLanguage(htmlLanguageId, () => {

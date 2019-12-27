@@ -1,22 +1,19 @@
 {
-  "name": "monaco-html",
-  "version": "2.6.0",
-  "description": "HTML plugin for the Monaco Editor",
+  "name": "@paul80nd/monaco-rcasm",
+  "version": "1.0.0",
+  "description": "Relay Computer Assembly language plugin for the Monaco Editor.",
   "scripts": {
     "compile": "mrmdir ./out && tsc -p ./src/tsconfig.json && tsc -p ./src/tsconfig.esm.json",
     "watch": "tsc -p ./src --watch",
     "prepublishOnly": "mrmdir ./release && npm run compile && node ./scripts/release.js && node ./scripts/bundle && mcopy ./src/monaco.d.ts ./release/monaco.d.ts",
-    "install-service-next": "npm install vscode-html-languageservice@next -f -D && npm install vscode-languageserver-types@next -f -D",
-    "install-service-local": "npm install ../vscode-html-languageservice -f -D && npm install ../vscode-languageserver-node/types -f -D"
+    "install-service-next": "npm install @paul80nd/vscode-rcasm-languageservice@next -f -D && npm install vscode-languageserver-types@next -f -D",
+    "install-service-local": "npm install ../vscode-rcasm-languageservice -f -D && npm install ../vscode-languageserver-node/types -f -D"
   },
-  "author": "Microsoft Corporation",
+  "author": "Paul Law",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Microsoft/monaco-html"
-  },
-  "bugs": {
-    "url": "https://github.com/Microsoft/monaco-editor/issues"
+    "url": "https://github.com/paul80nd/monaco-rcasm"
   },
   "devDependencies": {
     "monaco-editor-core": "0.19.0",

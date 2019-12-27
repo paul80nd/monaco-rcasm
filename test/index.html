@@ -11,10 +11,10 @@
 <div id="container" style="width:800px;height:600px;border:1px solid grey"></div>
 
 <script>
-	// Loading basic-languages to get the html language definition
+	// Loading basic-languages to get the rcasm language definition
 	var paths = {
 		'vs/basic-languages': '../node_modules/monaco-languages/release/dev',
-		'vs/language/html': '../release/dev',
+		'vs/language/rcasm': '../release/dev',
 		'vs': '../node_modules/monaco-editor-core/dev/vs'
 	};
 	if (document.location.protocol === 'http:') {
@@ -22,7 +22,7 @@
 		let testIndex = document.location.pathname.indexOf('/test/');
 		if (testIndex !== -1) {
 			let prefix = document.location.pathname.substr(0, testIndex);
-			paths['vs/language/html'] = prefix + '/release/dev';
+			paths['vs/language/rcasm'] = prefix + '/release/dev';
 		}
 	}
 	var require = {
@@ -36,7 +36,7 @@
 <script>
 	require([
 		'vs/basic-languages/monaco.contribution',
-		'vs/language/html/monaco.contribution'
+		'vs/language/rcasm/monaco.contribution'
 	], function() {
 		var editor = monaco.editor.create(document.getElementById('container'), {
 			value: [
@@ -64,7 +64,7 @@
 				'</body>',
 				'</html>'
 			].join('\n'),
-			language: 'html'
+			language: 'rcasm'
 		});
 	});
 </script>
