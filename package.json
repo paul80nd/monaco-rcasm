@@ -1,6 +1,6 @@
 {
   "name": "@paul80nd/monaco-rcasm",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Relay Computer Assembly language plugin for the Monaco Editor.",
   "scripts": {
     "compile": "mrmdir ./out && tsc -p ./src/tsconfig.json && tsc -p ./src/tsconfig.esm.json",
