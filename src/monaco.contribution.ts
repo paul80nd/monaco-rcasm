@@ -66,10 +66,10 @@ export class LanguageServiceDefaultsImpl implements monaco.languages.rcasm.Langu
 // 	wrapAttributes: 'auto'
 // };
 
- const rcasmOptionsDefault: Required<monaco.languages.rcasm.Options> = {
-// 	format: formatDefaults,
-// 	suggest: { html5: true, angular1: true, ionic: true }
- }
+const rcasmOptionsDefault: Required<monaco.languages.rcasm.Options> = {
+	// 	format: formatDefaults,
+	// 	suggest: { html5: true, angular1: true, ionic: true }
+}
 
 // const handlebarOptionsDefault: Required<monaco.languages.rcasm.Options> = {
 // 	format: formatDefaults,
@@ -83,7 +83,7 @@ export class LanguageServiceDefaultsImpl implements monaco.languages.rcasm.Langu
 
 function getConfigurationDefault(languageId: string): Required<monaco.languages.rcasm.ModeConfiguration> {
 	return {
-		// completionItems: true,
+		completionItems: true,
 		// hovers: true,
 		// documentSymbols: true,
 		// links: true,
@@ -93,8 +93,8 @@ function getConfigurationDefault(languageId: string): Required<monaco.languages.
 		// foldingRanges: true,
 		// selectionRanges: true,
 		diagnostics: languageId === rcasmLanguageId, // turned off for Razor and Handlebar
-//		documentFormattingEdits: languageId === rcasmLanguageId, // turned off for Razor and Handlebar
-//		documentRangeFormattingEdits: languageId === rcasmLanguageId // turned off for Razor and Handlebar
+		//		documentFormattingEdits: languageId === rcasmLanguageId, // turned off for Razor and Handlebar
+		//		documentRangeFormattingEdits: languageId === rcasmLanguageId // turned off for Razor and Handlebar
 	};
 }
 
@@ -110,8 +110,8 @@ const rcasmDefaults = new LanguageServiceDefaultsImpl(rcasmLanguageId, rcasmOpti
 function createAPI(): typeof monaco.languages.rcasm {
 	return {
 		rcasmDefaults: rcasmDefaults,
-//		razorDefaults: razorDefaults,
-//		handlebarDefaults: handlebarDefaults
+		//		razorDefaults: razorDefaults,
+		//		handlebarDefaults: handlebarDefaults
 	}
 }
 monaco.languages.rcasm = createAPI();

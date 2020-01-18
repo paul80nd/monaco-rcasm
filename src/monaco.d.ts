@@ -35,10 +35,10 @@ declare module monaco.languages.rcasm {
 	}
 
 	export interface ModeConfiguration {
-		// /**
-		//  * Defines whether the built-in completionItemProvider is enabled.
-		//  */
-		// readonly completionItems?: boolean;
+		/**
+		 * Defines whether the built-in completionItemProvider is enabled.
+		 */
+		readonly completionItems?: boolean;
 
 		// /**
 		//  * Defines whether the built-in hoverProvider is enabled.
@@ -104,6 +104,4 @@ declare module monaco.languages.rcasm {
 	}
 
 	export var rcasmDefaults: LanguageServiceDefaults;
-//	export var handlebarDefaults: LanguageServiceDefaults;
-//	export var razorDefaults: LanguageServiceDefaults;
 }

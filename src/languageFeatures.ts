@@ -10,10 +10,10 @@ import { RCASMWorker as RCASMWorker } from './rcasmWorker';
 import * as rcasmService from '@paul80nd/vscode-rcasm-languageservice';
 
 import Uri = monaco.Uri;
-//import Position = monaco.Position;
-//import Range = monaco.Range;
+import Position = monaco.Position;
+import Range = monaco.Range;
 import Thenable = monaco.Thenable;
-//import CancellationToken = monaco.CancellationToken;
+import CancellationToken = monaco.CancellationToken;
 import IDisposable = monaco.IDisposable;
 
 
@@ -129,12 +129,12 @@ function toDiagnostics(resource: Uri, diag: rcasmService.Diagnostic): monaco.edi
 
 // --- completion ------
 
-// function fromPosition(position: Position): rcasmService.Position {
-// 	if (!position) {
-// 		return void 0;
-// 	}
-// 	return { character: position.column - 1, line: position.lineNumber - 1 };
-// }
+function fromPosition(position: Position): rcasmService.Position {
+	if (!position) {
+		return void 0;
+	}
+	return { character: position.column - 1, line: position.lineNumber - 1 };
+}
 
 // function fromRange(range: Range): rcasmService.Range {
 // 	if (!range) {
@@ -143,38 +143,38 @@ function toDiagnostics(resource: Uri, diag: rcasmService.Diagnostic): monaco.edi
 // 	return { start: fromPosition(range.getStartPosition()), end: fromPosition(range.getEndPosition()) };
 // }
 
-// function toRange(range: rcasmService.Range): Range {
-// 	if (!range) {
-// 		return void 0;
-// 	}
-// 	return new Range(range.start.line + 1, range.start.character + 1, range.end.line + 1, range.end.character + 1);
-// }
+function toRange(range: rcasmService.Range): Range {
+	if (!range) {
+		return void 0;
+	}
+	return new Range(range.start.line + 1, range.start.character + 1, range.end.line + 1, range.end.character + 1);
+}
 
-// function toCompletionItemKind(kind: number): monaco.languages.CompletionItemKind {
-// 	const mItemKind = monaco.languages.CompletionItemKind;
+function toCompletionItemKind(kind: number): monaco.languages.CompletionItemKind {
+	const mItemKind = monaco.languages.CompletionItemKind;
 
-// 	switch (kind) {
-// 		case rcasmService.CompletionItemKind.Text: return mItemKind.Text;
-// 		case rcasmService.CompletionItemKind.Method: return mItemKind.Method;
-// 		case rcasmService.CompletionItemKind.Function: return mItemKind.Function;
-// 		case rcasmService.CompletionItemKind.Constructor: return mItemKind.Constructor;
-// 		case rcasmService.CompletionItemKind.Field: return mItemKind.Field;
-// 		case rcasmService.CompletionItemKind.Variable: return mItemKind.Variable;
-// 		case rcasmService.CompletionItemKind.Class: return mItemKind.Class;
-// 		case rcasmService.CompletionItemKind.Interface: return mItemKind.Interface;
-// 		case rcasmService.CompletionItemKind.Module: return mItemKind.Module;
-// 		case rcasmService.CompletionItemKind.Property: return mItemKind.Property;
-// 		case rcasmService.CompletionItemKind.Unit: return mItemKind.Unit;
-// 		case rcasmService.CompletionItemKind.Value: return mItemKind.Value;
-// 		case rcasmService.CompletionItemKind.Enum: return mItemKind.Enum;
-// 		case rcasmService.CompletionItemKind.Keyword: return mItemKind.Keyword;
-// 		case rcasmService.CompletionItemKind.Snippet: return mItemKind.Snippet;
-// 		case rcasmService.CompletionItemKind.Color: return mItemKind.Color;
-// 		case rcasmService.CompletionItemKind.File: return mItemKind.File;
-// 		case rcasmService.CompletionItemKind.Reference: return mItemKind.Reference;
-// 	}
-// 	return mItemKind.Property;
-// }
+	switch (kind) {
+		case rcasmService.CompletionItemKind.Text: return mItemKind.Text;
+		case rcasmService.CompletionItemKind.Method: return mItemKind.Method;
+		case rcasmService.CompletionItemKind.Function: return mItemKind.Function;
+		case rcasmService.CompletionItemKind.Constructor: return mItemKind.Constructor;
+		case rcasmService.CompletionItemKind.Field: return mItemKind.Field;
+		case rcasmService.CompletionItemKind.Variable: return mItemKind.Variable;
+		case rcasmService.CompletionItemKind.Class: return mItemKind.Class;
+		case rcasmService.CompletionItemKind.Interface: return mItemKind.Interface;
+		case rcasmService.CompletionItemKind.Module: return mItemKind.Module;
+		case rcasmService.CompletionItemKind.Property: return mItemKind.Property;
+		case rcasmService.CompletionItemKind.Unit: return mItemKind.Unit;
+		case rcasmService.CompletionItemKind.Value: return mItemKind.Value;
+		case rcasmService.CompletionItemKind.Enum: return mItemKind.Enum;
+		case rcasmService.CompletionItemKind.Keyword: return mItemKind.Keyword;
+		case rcasmService.CompletionItemKind.Snippet: return mItemKind.Snippet;
+		case rcasmService.CompletionItemKind.Color: return mItemKind.Color;
+		case rcasmService.CompletionItemKind.File: return mItemKind.File;
+		case rcasmService.CompletionItemKind.Reference: return mItemKind.Reference;
+	}
+	return mItemKind.Property;
+}
 
 // function fromCompletionItemKind(kind: monaco.languages.CompletionItemKind): rcasmService.CompletionItemKind {
 // 	const mItemKind = monaco.languages.CompletionItemKind;
@@ -202,68 +202,68 @@ function toDiagnostics(resource: Uri, diag: rcasmService.Diagnostic): monaco.edi
 // 	return rcasmService.CompletionItemKind.Property;
 // }
 
-// function toTextEdit(textEdit: rcasmService.TextEdit): monaco.editor.ISingleEditOperation {
-// 	if (!textEdit) {
-// 		return void 0;
-// 	}
-// 	return {
-// 		range: toRange(textEdit.range),
-// 		text: textEdit.newText
-// 	}
-// }
+function toTextEdit(textEdit: rcasmService.TextEdit): monaco.editor.ISingleEditOperation {
+	if (!textEdit) {
+		return void 0;
+	}
+	return {
+		range: toRange(textEdit.range),
+		text: textEdit.newText
+	}
+}
 
-// export class CompletionAdapter implements monaco.languages.CompletionItemProvider {
+export class CompletionAdapter implements monaco.languages.CompletionItemProvider {
 
-// 	constructor(private _worker: WorkerAccessor) {
-// 	}
+	constructor(private _worker: WorkerAccessor) {
+	}
 
-// 	public get triggerCharacters(): string[] {
-// 		return ['.', ':', '<', '"', '=', '/'];
-// 	}
+	// 	public get triggerCharacters(): string[] {
+	// 		return ['.', ':', '<', '"', '=', '/'];
+	// 	}
 
-// 	provideCompletionItems(model: monaco.editor.IReadOnlyModel, position: Position, context: monaco.languages.CompletionContext, token: CancellationToken): Thenable<monaco.languages.CompletionList> {
-// 		const resource = model.uri;
+	provideCompletionItems(model: monaco.editor.IReadOnlyModel, position: Position, context: monaco.languages.CompletionContext, token: CancellationToken): Thenable<monaco.languages.CompletionList> {
+		const resource = model.uri;
 
-// 		return this._worker(resource).then(worker => {
-// 			return worker.doComplete(resource.toString(), fromPosition(position));
-// 		}).then(info => {
-// 			if (!info) {
-// 				return;
-// 			}
-// 			const wordInfo = model.getWordUntilPosition(position);
-// 			const wordRange = new Range(position.lineNumber, wordInfo.startColumn, position.lineNumber, wordInfo.endColumn);
+		return this._worker(resource).then(worker => {
+			return worker.doComplete(resource.toString(), fromPosition(position));
+		}).then(info => {
+			if (!info) {
+				return;
+			}
+			const wordInfo = model.getWordUntilPosition(position);
+			const wordRange = new Range(position.lineNumber, wordInfo.startColumn, position.lineNumber, wordInfo.endColumn);
 
-// 			const items: monaco.languages.CompletionItem[] = info.items.map(entry => {
-// 				const item: monaco.languages.CompletionItem = {
-// 					label: entry.label,
-// 					insertText: entry.insertText || entry.label,
-// 					sortText: entry.sortText,
-// 					filterText: entry.filterText,
-// 					documentation: entry.documentation,
-// 					detail: entry.detail,
-// 					range: wordRange,
-// 					kind: toCompletionItemKind(entry.kind),
-// 				};
-// 				if (entry.textEdit) {
-// 					item.range = toRange(entry.textEdit.range);
-// 					item.insertText = entry.textEdit.newText;
-// 				}
-// 				if (entry.additionalTextEdits) {
-// 					item.additionalTextEdits = entry.additionalTextEdits.map(toTextEdit)
-// 				}
-// 				if (entry.insertTextFormat === rcasmService.InsertTextFormat.Snippet) {
-// 					item.insertTextRules = monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet;
-// 				}
-// 				return item;
-// 			});
+			const items: monaco.languages.CompletionItem[] = info.items.map(entry => {
+				const item: monaco.languages.CompletionItem = {
+					label: entry.label,
+					insertText: entry.insertText || entry.label,
+					sortText: entry.sortText,
+					filterText: entry.filterText,
+					documentation: entry.documentation,
+					detail: entry.detail,
+					range: wordRange,
+					kind: toCompletionItemKind(entry.kind),
+				};
+				if (entry.textEdit) {
+					item.range = toRange(entry.textEdit.range);
+					item.insertText = entry.textEdit.newText;
+				}
+				if (entry.additionalTextEdits) {
+					item.additionalTextEdits = entry.additionalTextEdits.map(toTextEdit)
+				}
+				if (entry.insertTextFormat === rcasmService.InsertTextFormat.Snippet) {
+					item.insertTextRules = monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet;
+				}
+				return item;
+			});
 
-// 			return {
-// 				isIncomplete: info.isIncomplete,
-// 				suggestions: items
-// 			};
-// 		});
-// 	}
-// }
+			return {
+				isIncomplete: info.isIncomplete,
+				suggestions: items
+			};
+		});
+	}
+}
 
 // --- hover ------
 

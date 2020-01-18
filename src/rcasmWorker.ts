@@ -38,12 +38,12 @@ export class RCASMWorker {
 		return Promise.resolve([]);
 	}
 
-	// doComplete(uri: string, position: rcasmService.Position): Thenable<rcasmService.CompletionList> {
-	// 	let document = this._getTextDocument(uri);
-	// 	let htmlDocument = this._languageService.parseHTMLDocument(document);
-	// 	return Promise.resolve(this._languageService.doComplete(document, position, htmlDocument, this._languageSettings && this._languageSettings.suggest));
-	// }
-	// format(uri: string, range: rcasmService.Range, options: rcasmService.FormattingOptions): Thenable<rcasmService.TextEdit[]> {
+	doComplete(uri: string, position: rcasmService.Position): Thenable<rcasmService.CompletionList> {
+		let document = this._getTextDocument(uri);
+		let program = this._languageService.parseProgram(document);
+		return Promise.resolve(this._languageService.doComplete(document, position, program  /*,this._languageSettings && this._languageSettings.suggest*/));
+	}
+	//format(uri: string, range: rcasmService.Range, options: rcasmService.FormattingOptions): Thenable<rcasmService.TextEdit[]> {
 	// 	let document = this._getTextDocument(uri);
 	// 	let textEdits = this._languageService.format(document, range, this._languageSettings && this._languageSettings.format);
 	// 	return Promise.resolve(textEdits);
