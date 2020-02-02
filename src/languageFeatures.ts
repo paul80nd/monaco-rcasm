@@ -267,61 +267,61 @@ export class CompletionAdapter implements monaco.languages.CompletionItemProvide
 
 // --- hover ------
 
-// function isMarkupContent(thing: any): thing is rcasmService.MarkupContent {
-// 	return thing && typeof thing === 'object' && typeof (<rcasmService.MarkupContent>thing).kind === 'string';
-// }
+function isMarkupContent(thing: any): thing is rcasmService.MarkupContent {
+	return thing && typeof thing === 'object' && typeof (<rcasmService.MarkupContent>thing).kind === 'string';
+}
 
-// function toMarkdownString(entry: rcasmService.MarkupContent | rcasmService.MarkedString): monaco.IMarkdownString {
-// 	if (typeof entry === 'string') {
-// 		return {
-// 			value: entry
-// 		};
-// 	}
-// 	if (isMarkupContent(entry)) {
-// 		if (entry.kind === 'plaintext') {
-// 			return {
-// 				value: entry.value.replace(/[\\`*_{}[\]()#+\-.!]/g, '\\$&')
-// 			};
-// 		}
-// 		return {
-// 			value: entry.value
-// 		};
-// 	}
+function toMarkdownString(entry: rcasmService.MarkupContent | rcasmService.MarkedString): monaco.IMarkdownString {
+	if (typeof entry === 'string') {
+		return {
+			value: entry
+		};
+	}
+	if (isMarkupContent(entry)) {
+		if (entry.kind === 'plaintext') {
+			return {
+				value: entry.value.replace(/[\\`*_{}[\]()#+\-.!]/g, '\\$&')
+			};
+		}
+		return {
+			value: entry.value
+		};
+	}
 
-// 	return { value: '```' + entry.language + '\n' + entry.value + '\n```\n' };
-// }
+	return { value: '```' + entry.language + '\n' + entry.value + '\n```\n' };
+}
 
-// function toMarkedStringArray(contents: rcasmService.MarkupContent | rcasmService.MarkedString | rcasmService.MarkedString[]): monaco.IMarkdownString[] {
-// 	if (!contents) {
-// 		return void 0;
-// 	}
-// 	if (Array.isArray(contents)) {
-// 		return contents.map(toMarkdownString);
-// 	}
-// 	return [toMarkdownString(contents)];
-// }
+function toMarkedStringArray(contents: rcasmService.MarkupContent | rcasmService.MarkedString | rcasmService.MarkedString[]): monaco.IMarkdownString[] {
+	if (!contents) {
+		return void 0;
+	}
+	if (Array.isArray(contents)) {
+		return contents.map(toMarkdownString);
+	}
+	return [toMarkdownString(contents)];
+}
 
-// export class HoverAdapter implements monaco.languages.HoverProvider {
+export class HoverAdapter implements monaco.languages.HoverProvider {
 
-// 	constructor(private _worker: WorkerAccessor) {
-// 	}
+	constructor(private _worker: WorkerAccessor) {
+	}
 
-// 	provideHover(model: monaco.editor.IReadOnlyModel, position: Position, token: CancellationToken): Thenable<monaco.languages.Hover> {
-// 		let resource = model.uri;
+	provideHover(model: monaco.editor.IReadOnlyModel, position: Position, token: CancellationToken): Thenable<monaco.languages.Hover> {
+		let resource = model.uri;
 
-// 		return this._worker(resource).then(worker => {
-// 			return worker.doHover(resource.toString(), fromPosition(position));
-// 		}).then(info => {
-// 			if (!info) {
-// 				return;
-// 			}
-// 			return <monaco.languages.Hover>{
-// 				range: toRange(info.range),
-// 				contents: toMarkedStringArray(info.contents)
-// 			};
-// 		});
-// 	}
-// }
+		return this._worker(resource).then(worker => {
+			return worker.doHover(resource.toString(), fromPosition(position));
+		}).then(info => {
+			if (!info) {
+				return;
+			}
+			return <monaco.languages.Hover>{
+				range: toRange(info.range),
+				contents: toMarkedStringArray(info.contents)
+			};
+		});
+	}
+}
 
 // --- document highlights ------
 

@@ -48,12 +48,12 @@ export class RCASMWorker {
 	// 	let textEdits = this._languageService.format(document, range, this._languageSettings && this._languageSettings.format);
 	// 	return Promise.resolve(textEdits);
 	// }
-	// doHover(uri: string, position: rcasmService.Position): Thenable<rcasmService.Hover> {
-	// 	let document = this._getTextDocument(uri);
-	// 	let htmlDocument = this._languageService.parseHTMLDocument(document);
-	// 	let hover = this._languageService.doHover(document, position, htmlDocument);
-	// 	return Promise.resolve(hover);
-	// }
+	doHover(uri: string, position: rcasmService.Position): Thenable<rcasmService.Hover> {
+		let document = this._getTextDocument(uri);
+		let program = this._languageService.parseProgram(document);
+		let hover = this._languageService.doHover(document, position, program);
+		return Promise.resolve(hover);
+	}
 	// findDocumentHighlights(uri: string, position: rcasmService.Position): Thenable<rcasmService.DocumentHighlight[]> {
 	// 	let document = this._getTextDocument(uri);
 	// 	let htmlDocument = this._languageService.parseHTMLDocument(document);

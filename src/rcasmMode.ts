@@ -24,7 +24,7 @@ export function setupMode1(defaults: LanguageServiceDefaultsImpl): void {
 
 	// all modes
 	monaco.languages.registerCompletionItemProvider(languageId, new languageFeatures.CompletionAdapter(worker));
-	// monaco.languages.registerHoverProvider(languageId, new languageFeatures.HoverAdapter(worker));
+	monaco.languages.registerHoverProvider(languageId, new languageFeatures.HoverAdapter(worker));
 
 	// monaco.languages.registerDocumentHighlightProvider(languageId, new languageFeatures.DocumentHighlightAdapter(worker));
 	// monaco.languages.registerLinkProvider(languageId, new languageFeatures.DocumentLinkAdapter(worker));
@@ -63,9 +63,9 @@ export function setupMode(defaults: LanguageServiceDefaultsImpl): IDisposable {
 		if (modeConfiguration.completionItems) {
 			providers.push(monaco.languages.registerCompletionItemProvider(languageId, new languageFeatures.CompletionAdapter(worker)));
 		}
-		// if (modeConfiguration.hovers) {
-		// 	providers.push(monaco.languages.registerHoverProvider(languageId, new languageFeatures.HoverAdapter(worker)));
-		// }
+		if (modeConfiguration.hovers) {
+			providers.push(monaco.languages.registerHoverProvider(languageId, new languageFeatures.HoverAdapter(worker)));
+		}
 		// if (modeConfiguration.documentHighlights) {
 		// 	providers.push(monaco.languages.registerDocumentHighlightProvider(languageId, new languageFeatures.DocumentHighlightAdapter(worker)));
 		// }

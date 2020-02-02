@@ -84,7 +84,7 @@ const rcasmOptionsDefault: Required<monaco.languages.rcasm.Options> = {
 function getConfigurationDefault(languageId: string): Required<monaco.languages.rcasm.ModeConfiguration> {
 	return {
 		completionItems: true,
-		// hovers: true,
+		hovers: true,
 		// documentSymbols: true,
 		// links: true,
 		// documentHighlights: true,
