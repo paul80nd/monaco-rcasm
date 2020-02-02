@@ -71,11 +71,6 @@ declare module monaco.languages.rcasm {
 		// readonly rename?: boolean;
 
 		// /**
-		//  * Defines whether the built-in color provider is enabled.
-		//  */
-		// readonly colors?: boolean;
-
-		// /**
 		//  * Defines whether the built-in foldingRange provider is enabled.
 		//  */
 		// readonly foldingRanges?: boolean;

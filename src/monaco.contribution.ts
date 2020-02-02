@@ -90,7 +90,6 @@ function getConfigurationDefault(languageId: string): Required<monaco.languages.
 		references: true,
 		documentHighlights: true,
 		// rename: true,
-		// colors: true,
 		// foldingRanges: true,
 		// selectionRanges: true,
 		diagnostics: languageId === rcasmLanguageId, // turned off for Razor and Handlebar
