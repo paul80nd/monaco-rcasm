@@ -85,9 +85,10 @@ function getConfigurationDefault(languageId: string): Required<monaco.languages.
 	return {
 		completionItems: true,
 		hovers: true,
-		// documentSymbols: true,
-		// links: true,
-		// documentHighlights: true,
+		documentSymbols: true,
+		definitions: true,
+		references: true,
+		documentHighlights: true,
 		// rename: true,
 		// colors: true,
 		// foldingRanges: true,

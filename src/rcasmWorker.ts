@@ -54,17 +54,30 @@ export class RCASMWorker {
 		let hover = this._languageService.doHover(document, position, program);
 		return Promise.resolve(hover);
 	}
-	// findDocumentHighlights(uri: string, position: rcasmService.Position): Thenable<rcasmService.DocumentHighlight[]> {
-	// 	let document = this._getTextDocument(uri);
-	// 	let htmlDocument = this._languageService.parseHTMLDocument(document);
-	// 	let highlights = this._languageService.findDocumentHighlights(document, position, htmlDocument);
-	// 	return Promise.resolve(highlights);
-	// }
-	// findDocumentLinks(uri: string): Thenable<rcasmService.DocumentLink[]> {
-	// 	let document = this._getTextDocument(uri);
-	// 	let links = this._languageService.findDocumentLinks(document, null);
-	// 	return Promise.resolve(links);
-	// }
+	findDefinition(uri: string, position: rcasmService.Position): Thenable<rcasmService.Location> {
+		let document = this._getTextDocument(uri);
+		let program = this._languageService.parseProgram(document);
+		let definition = this._languageService.findDefinition(document, position, program);
+		return Promise.resolve(definition);
+	}
+	findReferences(uri: string, position: rcasmService.Position): Thenable<rcasmService.Location[]> {
+		let document = this._getTextDocument(uri);
+		let program = this._languageService.parseProgram(document);
+		let references = this._languageService.findReferences(document, position, program);
+		return Promise.resolve(references);
+	}
+	findDocumentHighlights(uri: string, position: rcasmService.Position): Thenable<rcasmService.DocumentHighlight[]> {
+		let document = this._getTextDocument(uri);
+		let program = this._languageService.parseProgram(document);
+		let highlights = this._languageService.findDocumentHighlights(document, position, program);
+		return Promise.resolve(highlights);
+	}
+	findDocumentSymbols(uri: string): Thenable<rcasmService.SymbolInformation[]> {
+		let document = this._getTextDocument(uri);
+		let program = this._languageService.parseProgram(document);
+		let symbols = this._languageService.findDocumentSymbols(document, program);
+		return Promise.resolve(symbols);
+	}
 	// findDocumentSymbols(uri: string): Thenable<rcasmService.SymbolInformation[]> {
 	// 	let document = this._getTextDocument(uri);
 	// 	let htmlDocument = this._languageService.parseHTMLDocument(document);

@@ -325,37 +325,39 @@ export class HoverAdapter implements monaco.languages.HoverProvider {
 
 // --- document highlights ------
 
-// function toHighlighKind(kind: rcasmService.DocumentHighlightKind): monaco.languages.DocumentHighlightKind {
-// 	const mKind = monaco.languages.DocumentHighlightKind;
-
-// 	switch (kind) {
-// 		case rcasmService.DocumentHighlightKind.Read: return mKind.Read;
-// 		case rcasmService.DocumentHighlightKind.Write: return mKind.Write;
-// 		case rcasmService.DocumentHighlightKind.Text: return mKind.Text;
-// 	}
-// 	return mKind.Text;
-// }
+function toDocumentHighlightKind(kind: number): monaco.languages.DocumentHighlightKind {
+	switch (kind) {
+		case rcasmService.DocumentHighlightKind.Read: return monaco.languages.DocumentHighlightKind.Read;
+		case rcasmService.DocumentHighlightKind.Write: return monaco.languages.DocumentHighlightKind.Write;
+		case rcasmService.DocumentHighlightKind.Text: return monaco.languages.DocumentHighlightKind.Text;
+	}
+	return monaco.languages.DocumentHighlightKind.Text;
+}
 
 
-// export class DocumentHighlightAdapter implements monaco.languages.DocumentHighlightProvider {
+export class DocumentHighlightAdapter implements monaco.languages.DocumentHighlightProvider {
 
-// 	constructor(private _worker: WorkerAccessor) {
-// 	}
+	constructor(private _worker: WorkerAccessor) {
+	}
 
-// 	public provideDocumentHighlights(model: monaco.editor.IReadOnlyModel, position: Position, token: CancellationToken): Thenable<monaco.languages.DocumentHighlight[]> {
-// 		const resource = model.uri;
+	public provideDocumentHighlights(model: monaco.editor.IReadOnlyModel, position: Position, token: CancellationToken): Thenable<monaco.languages.DocumentHighlight[]> {
+		const resource = model.uri;
 
-// 		return this._worker(resource).then(worker => worker.findDocumentHighlights(resource.toString(), fromPosition(position))).then(items => {
-// 			if (!items) {
-// 				return;
-// 			}
-// 			return items.map(item => ({
-// 				range: toRange(item.range),
-// 				kind: toHighlighKind(item.kind)
-// 			}));
-// 		});
-// 	}
-// }
+		return this._worker(resource).then(worker => {
+			return worker.findDocumentHighlights(resource.toString(), fromPosition(position))
+		}).then(entries => {
+			if (!entries) {
+				return;
+			}
+			return entries.map(entry => {
+				return <monaco.languages.DocumentHighlight>{
+					range: toRange(entry.range),
+					kind: toDocumentHighlightKind(entry.kind)
+				};
+			});
+		});
+	}
+}
 
 // --- document symbols ------
 
@@ -410,29 +412,6 @@ export class HoverAdapter implements monaco.languages.HoverProvider {
 // 	}
 // }
 
-// export class DocumentLinkAdapter implements monaco.languages.LinkProvider {
-
-// 	constructor(private _worker: WorkerAccessor) {
-// 	}
-
-// 	public provideLinks(model: monaco.editor.IReadOnlyModel, token: CancellationToken): Thenable<monaco.languages.ILinksList> {
-// 		const resource = model.uri;
-
-// 		return this._worker(resource).then(worker => worker.findDocumentLinks(resource.toString())).then(items => {
-// 			if (!items) {
-// 				return;
-// 			}
-// 			return {
-// 				links: items.map(item => ({
-// 					range: toRange(item.range),
-// 					url: item.target
-// 				}))
-// 			};
-// 		});
-// 	}
-// }
-
-
 // function fromFormattingOptions(options: monaco.languages.FormattingOptions): rcasmService.FormattingOptions {
 // 	return {
 // 		tabSize: options.tabSize,
@@ -478,6 +457,55 @@ export class HoverAdapter implements monaco.languages.HoverProvider {
 // 	}
 // }
 
+// --- definition ------
+
+function toLocation(location: rcasmService.Location): monaco.languages.Location {
+	return {
+		uri: Uri.parse(location.uri),
+		range: toRange(location.range)
+	};
+}
+
+export class DefinitionAdapter {
+
+	constructor(private _worker: WorkerAccessor) {
+	}
+
+	public provideDefinition(model: monaco.editor.IReadOnlyModel, position: Position, token: CancellationToken): Thenable<monaco.languages.Definition> {
+		const resource = model.uri;
+
+		return this._worker(resource).then(worker => {
+			return worker.findDefinition(resource.toString(), fromPosition(position));
+		}).then(definition => {
+			if (!definition) {
+				return;
+			}
+			return [toLocation(definition)];
+		});
+	}
+}
+
+// --- references ------
+
+export class ReferenceAdapter implements monaco.languages.ReferenceProvider {
+
+	constructor(private _worker: WorkerAccessor) {
+	}
+
+	provideReferences(model: monaco.editor.IReadOnlyModel, position: Position, context: monaco.languages.ReferenceContext, token: CancellationToken): Thenable<monaco.languages.Location[]> {
+		const resource = model.uri;
+
+		return this._worker(resource).then(worker => {
+			return worker.findReferences(resource.toString(), fromPosition(position));
+		}).then(entries => {
+			if (!entries) {
+				return;
+			}
+			return entries.map(toLocation);
+		});
+	}
+}
+
 // export class RenameAdapter implements monaco.languages.RenameProvider {
 
 // 	constructor(private _worker: WorkerAccessor) {
@@ -514,6 +542,59 @@ export class HoverAdapter implements monaco.languages.HoverProvider {
 // 	}
 // }
 
+// --- document symbols ------
+
+function toSymbolKind(kind: rcasmService.SymbolKind): monaco.languages.SymbolKind {
+	let mKind = monaco.languages.SymbolKind;
+
+	switch (kind) {
+		case rcasmService.SymbolKind.File: return mKind.Array;
+		case rcasmService.SymbolKind.Module: return mKind.Module;
+		case rcasmService.SymbolKind.Namespace: return mKind.Namespace;
+		case rcasmService.SymbolKind.Package: return mKind.Package;
+		case rcasmService.SymbolKind.Class: return mKind.Class;
+		case rcasmService.SymbolKind.Method: return mKind.Method;
+		case rcasmService.SymbolKind.Property: return mKind.Property;
+		case rcasmService.SymbolKind.Field: return mKind.Field;
+		case rcasmService.SymbolKind.Constructor: return mKind.Constructor;
+		case rcasmService.SymbolKind.Enum: return mKind.Enum;
+		case rcasmService.SymbolKind.Interface: return mKind.Interface;
+		case rcasmService.SymbolKind.Function: return mKind.Function;
+		case rcasmService.SymbolKind.Variable: return mKind.Variable;
+		case rcasmService.SymbolKind.Constant: return mKind.Constant;
+		case rcasmService.SymbolKind.String: return mKind.String;
+		case rcasmService.SymbolKind.Number: return mKind.Number;
+		case rcasmService.SymbolKind.Boolean: return mKind.Boolean;
+		case rcasmService.SymbolKind.Array: return mKind.Array;
+	}
+	return mKind.Function;
+}
+
+export class DocumentSymbolAdapter implements monaco.languages.DocumentSymbolProvider {
+
+	constructor(private _worker: WorkerAccessor) {
+	}
+
+	public provideDocumentSymbols(model: monaco.editor.IReadOnlyModel, token: CancellationToken): Thenable<monaco.languages.DocumentSymbol[]> {
+		const resource = model.uri;
+
+		return this._worker(resource).then(worker => worker.findDocumentSymbols(resource.toString())).then(items => {
+			if (!items) {
+				return;
+			}
+			return items.map(item => ({
+				name: item.name,
+				detail: '',
+				containerName: item.containerName,
+				kind: toSymbolKind(item.kind),
+				tags: [],
+				range: toRange(item.location.range),
+				selectionRange: toRange(item.location.range)
+			}));
+		});
+	}
+}
+
 // export class FoldingRangeAdapter implements monaco.languages.FoldingRangeProvider {
 
 // 	constructor(private _worker: WorkerAccessor) {
@@ -548,6 +629,7 @@ export class HoverAdapter implements monaco.languages.HoverProvider {
 // 		case rcasmService.FoldingRangeKind.Region: return monaco.languages.FoldingRangeKind.Region;
 // 	}
 // }
+
 
 // export class SelectionRangeAdapter implements monaco.languages.SelectionRangeProvider {
 
