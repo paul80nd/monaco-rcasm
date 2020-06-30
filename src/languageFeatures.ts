@@ -506,35 +506,30 @@ export class ReferenceAdapter implements monaco.languages.ReferenceProvider {
 	}
 }
 
-function toWorkspaceEdit(edit: htmlService.WorkspaceEdit): monaco.languages.WorkspaceEdit {
-	if (!edit || !edit.changes) {
-		return void 0;
-	}
-	let resourceEdits: monaco.languages.WorkspaceTextEdit[] = [];
-	for (let uri in edit.changes) {
-		const _uri = Uri.parse(uri);
-		for (let e of edit.changes[uri]) {
-			resourceEdits.push({
-				resource: _uri,
-				edit: {
-					range: toRange(e.range),
-					text: e.newText
-				}
-			});
-		}
-	}
-	return {
-		edits: resourceEdits
-	}
-}
-
-export class FoldingRangeAdapter implements monaco.languages.FoldingRangeProvider {
+export class DocumentSymbolAdapter implements monaco.languages.DocumentSymbolProvider {
 
 	constructor(private _worker: WorkerAccessor) {
 	}
 
-	public provideFoldingRanges(model: monaco.editor.IReadOnlyModel, context: monaco.languages.FoldingContext, token: CancellationToken): Thenable<monaco.languages.FoldingRange[]> {
+	public provideDocumentSymbols(model: monaco.editor.IReadOnlyModel, token: CancellationToken): Thenable<monaco.languages.DocumentSymbol[]> {
 		const resource = model.uri;
+
+		return this._worker(resource).then(worker => worker.findDocumentSymbols(resource.toString())).then(items => {
+			if (!items) {
+				return;
+			}
+			return items.map(item => ({
+				name: item.name,
+				detail: '',
+				containerName: item.containerName,
+				kind: toSymbolKind(item.kind),
+				tags: [],
+				range: toRange(item.location.range),
+				selectionRange: toRange(item.location.range)
+			}));
+		});
+	}
+}
 
 // --- document symbols ------
 
@@ -564,29 +559,4 @@ function toSymbolKind(kind: rcasmService.SymbolKind): monaco.languages.SymbolKin
 	return mKind.Function;
 }
 
-export class DocumentSymbolAdapter implements monaco.languages.DocumentSymbolProvider {
 
-	constructor(private _worker: WorkerAccessor) {
-	}
-
-	public provideDocumentSymbols(model: monaco.editor.IReadOnlyModel, token: CancellationToken): Thenable<monaco.languages.DocumentSymbol[]> {
-		const resource = model.uri;
-
-		return this._worker(resource).then(worker => worker.findDocumentSymbols(resource.toString())).then(items => {
-			if (!items) {
-				return;
-			}
-			return items.map(item => ({
-				name: item.name,
-				detail: '',
-				containerName: item.containerName,
-				kind: toSymbolKind(item.kind),
-				tags: [],
-				range: toRange(item.location.range),
-				selectionRange: toRange(item.location.range)
-			}));
-		});
-	}
-}
-
-}
