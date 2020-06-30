@@ -245,7 +245,7 @@ export class CompletionAdapter implements monaco.languages.CompletionItemProvide
 					kind: toCompletionItemKind(entry.kind),
 				};
 				if (entry.textEdit) {
-					item.range = toRange(entry.textEdit.range);
+					item.range = toRange((<rcasmService.TextEdit>entry.textEdit).range);
 					item.insertText = entry.textEdit.newText;
 				}
 				if (entry.additionalTextEdits) {
