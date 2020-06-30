@@ -506,41 +506,35 @@ export class ReferenceAdapter implements monaco.languages.ReferenceProvider {
 	}
 }
 
-// export class RenameAdapter implements monaco.languages.RenameProvider {
+function toWorkspaceEdit(edit: htmlService.WorkspaceEdit): monaco.languages.WorkspaceEdit {
+	if (!edit || !edit.changes) {
+		return void 0;
+	}
+	let resourceEdits: monaco.languages.WorkspaceTextEdit[] = [];
+	for (let uri in edit.changes) {
+		const _uri = Uri.parse(uri);
+		for (let e of edit.changes[uri]) {
+			resourceEdits.push({
+				resource: _uri,
+				edit: {
+					range: toRange(e.range),
+					text: e.newText
+				}
+			});
+		}
+	}
+	return {
+		edits: resourceEdits
+	}
+}
 
-// 	constructor(private _worker: WorkerAccessor) {
-// 	}
+export class FoldingRangeAdapter implements monaco.languages.FoldingRangeProvider {
 
-// 	provideRenameEdits(model: monaco.editor.IReadOnlyModel, position: Position, newName: string, token: CancellationToken): Thenable<monaco.languages.WorkspaceEdit> {
-// 		const resource = model.uri;
+	constructor(private _worker: WorkerAccessor) {
+	}
 
-// 		return this._worker(resource).then(worker => {
-// 			return worker.doRename(resource.toString(), fromPosition(position), newName);
-// 		}).then(edit => {
-// 			return toWorkspaceEdit(edit);
-// 		});
-// 	}
-// }
-
-// function toWorkspaceEdit(edit: rcasmService.WorkspaceEdit): monaco.languages.WorkspaceEdit {
-// 	if (!edit || !edit.changes) {
-// 		return void 0;
-// 	}
-// 	let resourceEdits: monaco.languages.ResourceTextEdit[] = [];
-// 	for (let uri in edit.changes) {
-// 		let edits: monaco.languages.TextEdit[] = [];
-// 		for (let e of edit.changes[uri]) {
-// 			edits.push({
-// 				range: toRange(e.range),
-// 				text: e.newText
-// 			});
-// 		}
-// 		resourceEdits.push({ resource: Uri.parse(uri), edits: edits });
-// 	}
-// 	return {
-// 		edits: resourceEdits
-// 	}
-// }
+	public provideFoldingRanges(model: monaco.editor.IReadOnlyModel, context: monaco.languages.FoldingContext, token: CancellationToken): Thenable<monaco.languages.FoldingRange[]> {
+		const resource = model.uri;
 
 // --- document symbols ------
 
@@ -595,63 +589,4 @@ export class DocumentSymbolAdapter implements monaco.languages.DocumentSymbolPro
 	}
 }
 
-// export class FoldingRangeAdapter implements monaco.languages.FoldingRangeProvider {
-
-// 	constructor(private _worker: WorkerAccessor) {
-// 	}
-
-// 	public provideFoldingRanges(model: monaco.editor.IReadOnlyModel, context: monaco.languages.FoldingContext, token: CancellationToken): Thenable<monaco.languages.FoldingRange[]> {
-// 		const resource = model.uri;
-
-// 		return this._worker(resource).then(worker => worker.getFoldingRanges(resource.toString(), context)).then(ranges => {
-// 			if (!ranges) {
-// 				return;
-// 			}
-// 			return ranges.map(range => {
-// 				const result: monaco.languages.FoldingRange = {
-// 					start: range.startLine + 1,
-// 					end: range.endLine + 1
-// 				};
-// 				if (typeof range.kind !== 'undefined') {
-// 					result.kind = toFoldingRangeKind(<rcasmService.FoldingRangeKind>range.kind);
-// 				}
-// 				return result;
-// 			});
-// 		});
-// 	}
-
-// }
-
-// function toFoldingRangeKind(kind: rcasmService.FoldingRangeKind): monaco.languages.FoldingRangeKind {
-// 	switch (kind) {
-// 		case rcasmService.FoldingRangeKind.Comment: return monaco.languages.FoldingRangeKind.Comment;
-// 		case rcasmService.FoldingRangeKind.Imports: return monaco.languages.FoldingRangeKind.Imports;
-// 		case rcasmService.FoldingRangeKind.Region: return monaco.languages.FoldingRangeKind.Region;
-// 	}
-// }
-
-
-// export class SelectionRangeAdapter implements monaco.languages.SelectionRangeProvider {
-
-// 	constructor(private _worker: WorkerAccessor) {
-// 	}
-
-// 	public provideSelectionRanges(model: monaco.editor.IReadOnlyModel, positions: Position[], token: CancellationToken): Thenable<monaco.languages.SelectionRange[][]> {
-// 		const resource = model.uri;
-
-// 		return this._worker(resource).then(worker => worker.getSelectionRanges(resource.toString(), positions.map(fromPosition))).then(selectionRanges => {
-// 			if (!selectionRanges) {
-// 				return;
-// 			}
-// 			return selectionRanges.map(selectionRange => {
-// 				const result: monaco.languages.SelectionRange[] = [];
-// 				while (selectionRange) {
-// 					result.push({ range: toRange(selectionRange.range) });
-// 					selectionRange = selectionRange.parent;
-// 				}
-// 				return result;
-// 			});
-// 		});
-// 	}
-
-// }
+}

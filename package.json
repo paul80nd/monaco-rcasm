@@ -1,6 +1,6 @@
 {
   "name": "@paul80nd/monaco-rcasm",
-  "version": "1.0.4",
+  "version": "2.7.0",
   "description": "Relay Computer Assembly language plugin for the Monaco Editor.",
   "scripts": {
     "compile": "mrmdir ./out && tsc -p ./src/tsconfig.json && tsc -p ./src/tsconfig.esm.json",
@@ -19,14 +19,14 @@
     "registry": "https://npm.pkg.github.com/"
   },
   "devDependencies": {
-    "@paul80nd/monaco-languages": "^1.0.2",
-    "@paul80nd/vscode-rcasm-languageservice": "1.0.6",
-    "monaco-editor-core": "0.19.0",
+    "monaco-editor-core": "0.20.0",
+    "@paul80nd/monaco-languages": "^1.10.0",
     "monaco-plugin-helpers": "^1.0.2",
     "requirejs": "^2.3.6",
-    "terser": "^4.4.3",
-    "typescript": "^3.7.3",
-    "vscode-languageserver-textdocument": "^1.0.0-next.5",
-    "vscode-languageserver-types": "3.15.0-next.9"
+    "typescript": "^3.7.5",
+    "terser": "^4.6.3",
+    "@paul80nd/vscode-rcasm-languageservice": "3.0.4-next.12",
+    "vscode-languageserver-types": "3.15.0-next.9",
+    "vscode-languageserver-textdocument": "^1.0.0-next.5"
   }
 }
